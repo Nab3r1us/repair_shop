@@ -27,12 +27,12 @@ class Devices(db.Model):
     __tablename__ = "devices"
 
     id = db.Column(db.Integer, primary_key=True)
-    manufacturer = db.Column(db.String(255), unique=True, nullable=False)
-    model = db.Column(db.String(255), unique=True, nullable=False)
+    manufacturer = db.Column(db.String(255), nullable=False)
+    model = db.Column(db.String(255), nullable=False)
     sn = db.Column(db.String(255), unique=True, nullable=False)
     release_date = db.Column(db.DateTime, nullable=False)
-    purchase_date = db.Column(db.DateTime, nullable=False)
-    client_id = db.Column(db.Integer, unique=True, nullable=False)
+    purchase_date = db.Column(db.DateTime)
+    client_id = db.Column(db.Integer, db.ForeignKey("clients.id"), nullable=False)
 
     def json(self):
         return {
@@ -50,9 +50,9 @@ class Employees(db.Model):
     __tablename__ = "employees"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), unique=True, nullable=False)
-    surname = db.Column(db.String(255), unique=True, nullable=False)
-    post = db.Column(db.String(255), unique=True, nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+    surname = db.Column(db.String(255), nullable=False)
+    post = db.Column(db.String(255), nullable=False)
 
     def json(self):
         return {
@@ -72,11 +72,11 @@ class Orders(db.Model):
         completed = "завершен"
 
     id = db.Column(db.Integer, primary_key=True)
-    order_date = db.Column(db.DateTime, unique=True, nullable=False)
-    device_id = db.Column(db.Integer, unique=True, nullable=False)
-    description = db.Column(db.String(255), unique=True, nullable=False)
-    cost = db.Column(db.Float, unique=True, nullable=False)
-    state = db.Column(db.Enum(States), unique=True, nullable=False)
+    order_date = db.Column(db.DateTime, nullable=False)
+    device_id = db.Column(db.Integer, db.ForeignKey("devices.id"), nullable=False)
+    description = db.Column(db.String(255), nullable=False)
+    cost = db.Column(db.Float, nullable=False)
+    state = db.Column(db.Enum(States), nullable=False)
 
     def json(self):
         return {
@@ -94,8 +94,8 @@ class Payments(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     payment_date = db.Column(db.DateTime, unique=True, nullable=False)
-    order_id = db.Column(db.Integer, unique=True, nullable=False)
-    amount = db.Column(db.Float, unique=True, nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey("orders.id"), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
 
     def json(self):
         return {
@@ -110,9 +110,9 @@ class Schedule(db.Model):
     __tablename__ = "schedule"
 
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, unique=True, nullable=False)
-    employee_id = db.Column(db.Integer, nullable=False)
-    order_id = db.Column(db.Integer, unique=True, nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
+    employee_id = db.Column(db.Integer, db.ForeignKey("employees.id"), nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey("orders.id"), nullable=False)
 
     def json(self):
         return {
