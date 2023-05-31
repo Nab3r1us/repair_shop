@@ -1,7 +1,6 @@
-from python:latest
+FROM python:latest
 
 WORKDIR /api
-COPY requirements.txt /api
-RUN pip3 install --upgrade pip -r requirements.txt
-COPY . /api
-EXPOSE 5000
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+CMD ["python", "app.py"]
